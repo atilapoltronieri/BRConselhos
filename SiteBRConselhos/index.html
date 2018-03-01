@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Home</title>
+		
+		<!-- Compiled and minified CSS -->
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
+		<link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+		<link rel="stylesheet" href="css/styleHome.css">
+		<link href="lib/toaster.css" rel="stylesheet">
+		
+		<script src="http://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+
+		<!-- Compiled and minified JavaScript -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+						
+		<!-- ionic/angularjs js -->
+		<script src="lib/angular/angular.min.js"></script>
+		<script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+		<script src="lib/angular-animate/angular-animate.js"></script>
+		<script src="lib/angular-sanitize/angular-sanitize.min.js"></script>
+		<script src="lib/angular-spinner/angular-spinner.js"></script>
+		<script src="lib/toaster.min.js"></script>
+		<script src="lib/angular-ui-mask/dist/mask.js"></script>
+		<script src="lib/bs-table.js"></script>
+
+		<!-- your app's js -->
+		<script src="js/app.js"></script>
+		<script src="js/linq.js"></script>
+
+	</head>
+
+	<body ng-app="myApp" ng-controller="contribuinteCtrl as contribuinte">
+		<toaster-container toaster-options="{'time-out': 2000, 'close-button':true, 'animation-class': 'toast-bottom-right'}"></toaster-container>
+	
+		<div class="content-header">
+			<nav>
+				<div class="nav-wrapper">
+					<!-- <a href="#" data-activates="slide-out" class="button-collapse"><i class="material-icons">menu</i></a> -->
+					<a href="#" class="brand-logo">Contribuintes BR Consultoria</a>
+				  
+					<ul id="nav-mobile" class="right hide-on-med-and-down">
+						<li class="border-right"><h4 class="white-text">Bem Vindo</h4></li>
+						<li class="border-right"><a class="default-color modal-trigger pointer" href="#modalSobre"><h4 class="white-text">Ajuda</h4></a></li>
+						<!-- <li><a class="pointer"><i title="Deslogar" ng-click="logout()" class="material-icons">power_settings_new</i></a></li> -->
+					</ul>
+				</div>
+			</nav>			
+		</div>
+		
+		<div class="container p-t-20">
+			<!-- Page Content goes here -->
+			
+			<div class="row">
+				<div class="col s12 m12">
+				  <div class="card white darken-1">
+					<div class="card-content black-text slim">
+						<span class="card-title">
+							Filtros
+						</span>
+						<div class="row">
+							<div class="col s3">
+							  <label for="filtroPagador">ID</label>
+							  <input id="filtroPagador" ng-model="filtro.id" placeholder="ID" minlength="1" maxlength="128" type="text" class="validate">
+							</div>
+							<div class="col s3">
+							  <label for="filtroBeneficiario">Nome</label>
+							  <input id="filtroBeneficiario" ng-model="filtro.nome" placeholder="Nome" minlength="1" maxlength="128" type="text" class="validate">
+						    </div>
+							<div class="col s3">
+							  <label for="filtroBeneficiario">CPF</label>
+							  <input id="filtroBeneficiario" ng-model="filtro.cpf" ui-mask="999.999.999-99" placeholder="___.___.___-__" type="text" class="validate">
+						    </div>
+							<div class="col s3">
+								<a class="waves-effect waves-light default-color btn right" ng-click="aplicarFiltro()">Aplicar Filtro</a>
+							</div>
+						</div>
+					</div>
+				  </div>
+				  <div class="card white darken-1">
+					<div class="card-content black-text">
+						<span class="card-title">
+							Lista de Contribuintes
+							<a class="waves-effect waves-light default-color btn modal-trigger right" href="#modal1" ng-click="novoContribuinte()">Novo Contribuinte</a>
+						</span>
+						<table class="bordered highlight">
+							<thead>
+							  <tr>
+								  <th> </th>
+								  <th>Id</th>
+								  <th>Nome</th>
+								  <th>CPF</th>
+								  <th>Nº Dep.</th>
+								  <th>Renda Bruta</th>
+								  <th>Renda Líquida</th>
+								  <th>IR</th>
+							  </tr>
+							</thead>
+							
+							<tr ng-repeat="contribuinte in listaContribuintesShow track by contribuinte.id" ng-click="editarContribuinte(contribuinte)">
+								<td><a class="pointer"><i  href="#modalDeletar" title="Deletar" ng-click="deletarContribuinte(contribuinte.id)" class="material-icons modal-trigger">delete</a></li></td>
+								<td class="modal-trigger pointer" href="#modal1" >{{contribuinte.id}}</td>
+								<td class="modal-trigger pointer" href="#modal1" >{{contribuinte.nome}}</td>
+								<td class="modal-trigger pointer" href="#modal1" >{{contribuinte.cpf}}</td>
+								<td class="modal-trigger pointer" href="#modal1" >{{contribuinte.numeroDependentes}}</td>
+								<td class="modal-trigger pointer" href="#modal1" >{{contribuinte.rendaBruta}}</td>
+								<td class="modal-trigger pointer" href="#modal1" >{{contribuinte.rendaLiquida}}</td>
+								<td class="modal-trigger pointer" href="#modal1" >{{contribuinte.ir}}</td>
+							</tr>
+						</table>
+						
+							
+						<div class="modal-footer text-right">
+							<a class="bold black-text">Registros {{paginacao.registroInicial}} à {{paginacao.registroFinal}} de {{paginacao.registrosTotais}}</a>
+							<a ng-click="anteriorPagina()" ng-class="{'disabled': validaAnteriorPagina()}" title="Página Anterior" class="waves-effect waves-grey btn-flat pointer green white-text"><<</a>
+							<a ng-click="proximaPagina()" ng-class="{'disabled': validaProximaPagina()}" title="Próxima Página" class="waves-effect waves-grey btn-flat pointer green white-text">>></a>							
+						</div>
+					</div>
+				  </div>
+				  <div class="card white darken-1">
+					<div class="card-content black-text slim">
+						<span class="card-title">
+							Salário Mínimo: {{salarioMinimo.valor | currency:'R$' }}
+							<a class="waves-effect waves-light default-color btn modal-trigger right" href="#modalSalarioMinimo" >Alterar</a>
+						</span>
+					</div>
+				  </div>
+				</div>
+			</div>		
+		</div>
+		
+		<div id="modal1" class="modal">
+			<div class="modal-content">
+				<h4>Contribuinte {{objetoTela.idContribuinte}}</h4>
+				
+				<div class="row">
+					<form class="col s12">
+						<div class="row">
+							<div class="input-field col s6">
+							  <input id="first_name" ng-model="objetoTela.nome" placeholder="Nome" minlength="1" maxlength="128" type="text" class="validate" required>
+							  <label for="first_name">Nome</label>
+							</div>
+							
+							<div class="input-field col s6">
+							  <input id="last_name" ng-model="objetoTela.cpf" ui-mask="999.999.999-99" placeholder="___.___.___-__" ng-blur=(validaTipo()) type="text" class="validate" required>
+							  <label for="last_name">CPF</label>
+							</div>
+							
+						</div>
+					</form>
+				</div>
+				
+				<div class="row">				
+					<form class="col s12">
+						<div class="row">
+							<div class="input-field col s3">
+							  <input id="first_name" ng-model="objetoTela.numeroDependentes" placeholder="Nº Depentendes" type="number" class="validate" required>
+							  <label for="first_name">Número Dependentes</label>
+							</div>
+							<div class="input-field col s3">
+							  <input id="first_name" ng-model="objetoTela.rendaBruta" value="{{objetoTela.rendaBruta | currency:'R$'}}" placeholder="R$" step="0.01" min="0" max="999999999999999" type="number" class="validate" required>
+							  <label for="first_name">Renda Bruta</label>
+							</div>
+							<div class="input-field col s3">
+							  <input id="first_name" ng-model="objetoTela.rendaLiquida" ng-disabled="true" value="{{objetoTela.rendaLiquida | currency:'R$'}}" placeholder="R$" step="0.01" min="0" max="999999999999999" type="number" class="validate" required>
+							  <label for="first_name">Renda Líquida</label>
+							</div>
+							<div class="input-field col s3">
+							  <input id="first_name" ng-model="objetoTela.ir" ng-disabled="true" placeholder="IR (%)" type="text" class="validate" required>
+							  <label for="first_name">IR (%)</label>
+							</div>
+						</div>
+					</form>
+				</div>
+				
+			</div>
+			
+			<div class="modal-footer">
+				<a ng-click="salvarContribuinte()" ng-class="{'disabled': validaSalvar()}" class="modal-action modal-close waves-effect waves-grey btn-flat pointer green white-text">Salvar</a>
+				<a class="modal-action modal-close waves-effect waves-grey btn-flat pointer red white-text">Fechar</a>
+			</div>
+		</div>
+			
+		<div id="modalDeletar" class="modal modalDeletar">
+			<div class="modal-content">
+				<span class="card-title"><h4>Confirma Deleção</h4></span>
+				<div class="modal-footer text-right">
+					<a ng-click="confirmarDeletarContribuinte()" class="modal-action modal-close waves-effect waves-grey btn-flat pointer green white-text">Deletar</a>
+					<a class="modal-action modal-close waves-effect waves-grey btn-flat pointer red white-text">Cancelar</a>
+				</div>
+			</div>
+		</div>
+		
+		<div id="modalSalarioMinimo" class="modal modalSalarioMinimo">
+			<div class="modal-content">
+				<span class="card-title"><h4>Insira o Novo Valor para o Salário Mínimo</h4></span>
+				<div class="row">
+					<div class="input-field col s6">
+					  <input id="first_name" ng-model="salarioMinimo.valor" value="{{salarioMinimo.valor | currency:'R$'}}" placeholder="R$" step="0.01" min="0" max="999999999999999" type="number" class="validate" required>
+					  <label for="first_name">Salário Mínimo</label>
+					</div>
+				</div>
+				<div class="modal-footer text-right">
+					<a ng-click="inserirSalarioMinimo()" class="modal-action modal-close waves-effect waves-grey btn-flat pointer green white-text">Inserir</a>
+					<a class="modal-action modal-close waves-effect waves-grey btn-flat pointer red white-text">Cancelar</a>
+				</div>
+			</div>
+		</div>
+		
+		<div id="modalSobre" class="modal modalSobre">
+			<div class="modal-content">
+				<span class="card-title"><h4>Sistema BRConselhos</h4></span>
+				
+				<div class="modal-body"> 
+					<span>Bem vindo ao sistema da BRConselhos. Aqui você poderá inserir seus Contribuintes e calcular sua Alíquota.
+						<br/>
+						O botão de Novo Contribuinte irá te abrir uma tela para inserir todos os dados do Constribuinte que deseje Inserir.
+						<br/>
+						<br/>
+						Para editar algum Contribuinte, clique sobre o registro desejado na tabela Lista de Contribuintes para abrir a tela de edição. Será a mesma tela de Novo Contribuinte, porém com o registro selecionado. 
+						<br/>
+						<br/>
+						Quando aberta a tela de Novo/Editar Contribuinte, basta preencher todos os campos e clicar em Salvar para salvar seu registro. Para não o salvar basta clicar em Cancelar ou clicar fora da tela.
+						<br/>
+						<br/>
+						A esquerda de cada item consta um ícone de uma Lixeira: É onde poderá deletar seu registro. Clique no mesmo para aparecer uma tela de confirmação de deleção. Clique em Deletar caso queira realmente o deletar.
+						<br/>
+						<br/>
+						Abaixo da tabela Lista de Contribuintes há uma linha que mostrará o número de registros que constam para seu usuário e quais estão o sendo exibido. A direita desta linha há dois botões para alterar a página em que se encontra. A paginação desta lista é de 10(dez) registros.
+						<br/>
+						<br/>
+						Por último consta o Salário Mínimo. Nele estará exibindo o valor cadastrado no banco. Para o alterar basta clicar no botão Alterar, a direita do valor, para abrir uma tela. Nela basta digitar valor e clicar em Inserir. Quando é efetuado este procedimento será recalculado a Alíquota para todos os Contribuintes.
+						<br/>
+						<br/>
+						Depois que o Salário Mínimo for cadastrado todos os Contribuintes que forem salvos posteriormente já terão sua Alíquota calculada, evitando que o usuário seja obrigado a informar o valor novamente.
+						<br/>
+						<br/>
+						Faça bom uso do sistema. Obrigado.
+					</span>
+				</div>
+				
+				<div class="modal-footer text-right">
+					<a class="modal-action modal-close waves-effect waves-grey btn-flat pointer red white-text">Fechar</a>
+				</div>
+			</div>
+		</div>
+	</body>
+	
+	<script type="text/javascript">
+	
+		// Initialize collapse button
+		//$(".button-collapse").sideNav();
+		// Initialize collapsible (uncomment the line below if you use the dropdown variation)
+		//$('.collapsible').collapsible();
+	  
+		$(document).ready(function(){
+			// the "href" attribute of the modal trigger must specify the modal ID that wants to be triggered
+			$('.modal').modal();
+			$('.modalDeletar').modal();
+			$('.modalSobre').modal();
+			$('.modalSalarioMinimo').modal();
+		});
+	  
+	</script>
+
+</html>
